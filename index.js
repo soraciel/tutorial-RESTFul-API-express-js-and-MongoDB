@@ -115,7 +115,22 @@ router.route('/bears/:bear_id')
   res.json({ message: 'Successfully deleted' });
         });
     });
-
+router.route('/bears/name/:name')
+	.get(function(req, res) {
+		
+	 var query_string= "{Name:"+ req.params.name + "}";
+	 console.log(req.params.name);
+	 console.log(query_string);
+        Bear.find(
+		{
+			name: req.params.name
+		},function(err, bear) {
+            if (err)
+                res.send(err);
+            res.json(bear);
+			
+        });
+    });
 	
 	// REGISTER OUR ROUTES -------------------------------
 // all of our routes will be prefixed with /api
