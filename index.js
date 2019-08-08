@@ -54,6 +54,7 @@ router.route('/bears')
 
         var bear = new Bear();      // create a new instance of the Bear model
         bear.name = req.body.name;  // set the bears name (comes from the request)
+		bear.weight = req.body.weight;
 
 		// save the bear and check for errors
         bear.save(function(err) {
@@ -115,15 +116,15 @@ router.route('/bears/:bear_id')
   res.json({ message: 'Successfully deleted' });
         });
     });
+	
+	//route name 
 router.route('/bears/name/:name')
 	.get(function(req, res) {
-		
-	 var query_string= "{Name:"+ req.params.name + "}";
-	 console.log(req.params.name);
-	 console.log(query_string);
+	 	
+	 
         Bear.find(
 		{
-			name: req.params.name
+			name: { $regex: new RegExp('^'+ req.params.name + '$', "i")} //insensitive case query
 		},function(err, bear) {
             if (err)
                 res.send(err);
