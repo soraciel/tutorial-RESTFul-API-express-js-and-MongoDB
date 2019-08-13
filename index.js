@@ -4,15 +4,8 @@ var app        = express();                 // define our app using express
 var bodyParser = require('body-parser');
 var Bear     = require('./app/models/bear');
 var mongoose   = require('mongoose');
-var MongoClient = require('mongodb').MongoClient;
-var uri="mongodb+srv://admin:admin25@cluster0-n01wx.gcp.mongodb.net/test?retryWrites=true&w=majority";
-//var client = new MongoClient(uri, { useNewUrlParser: true });
 
-/*client.connect(err => {
-  const collection = client.db("test").collection("devices");
-  // perform actions on the collection object
-  client.close();
-});*/
+
 mongoose.connect('mongodb+srv://admin:admin25@cluster0-n01wx.gcp.mongodb.net/test?retryWrites=true&w=majority', { useNewUrlParser: true }); // connect to our database
 
 
@@ -25,7 +18,9 @@ var port = process.env.PORT || 8080;        // set our port
 
 // ROUTES FOR OUR API
 // =============================================================================
-var router = express.Router();              // get an instance of the express Router
+var router = express.Router();    
+const router_lion = require('./app/myroutes/lion');
+          // get an instance of the express Router
 
 // middleware to use for all requests
 router.use(function(req, res, next) {
@@ -54,7 +49,7 @@ router.route('/bears')
 
         var bear = new Bear();      // create a new instance of the Bear model
         bear.name = req.body.name;  // set the bears name (comes from the request)
-		bear.weight = req.body.weight;
+		bear.weight = req.body.w;
 
 		// save the bear and check for errors
         bear.save(function(err) {
@@ -74,6 +69,12 @@ router.route('/bears')
             res.json(bears);
         });
     });
+
+	
+	
+	
+	
+	
 // on routes that end in /bears/:bear_id
 // ----------------------------------------------------
 router.route('/bears/:bear_id')
@@ -116,8 +117,6 @@ router.route('/bears/:bear_id')
   res.json({ message: 'Successfully deleted' });
         });
     });
-	
-	//route name 
 router.route('/bears/name/:name')
 	.get(function(req, res) {
 	 	
@@ -132,10 +131,12 @@ router.route('/bears/name/:name')
 			
         });
     });
-	
+
+	router.use('/lion',router_lion);
 	// REGISTER OUR ROUTES -------------------------------
 // all of our routes will be prefixed with /api
 app.use('/api', router);
+console.log('index');
 
 // START THE SERVER
 // =============================================================================
